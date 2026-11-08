@@ -63,6 +63,27 @@ const algorithmInfo: Record<Algorithm, { label: string; description: string; sec
 };
 
 
+const modernAlgorithms: Algorithm[] = ["aes-256-gcm", "aes-128-gcm"];
+const classicalAlgorithms: Algorithm[] = ["caesar", "rot13", "atbash", "vigenere", "rail-fence"];
+
+function algorithmIcon(algorithm: Algorithm) {
+  switch (algorithm) {
+    case "aes-256-gcm":
+    case "aes-128-gcm":
+      return <ShieldCheck size={19} strokeWidth={2} />;
+    case "caesar":
+      return <ArrowLeftRight size={19} strokeWidth={2} />;
+    case "rot13":
+      return <RefreshCw size={19} strokeWidth={2} />;
+    case "atbash":
+      return <Zap size={19} strokeWidth={2} />;
+    case "vigenere":
+      return <LockKeyhole size={19} strokeWidth={2} />;
+    case "rail-fence":
+      return <Sparkles size={19} strokeWidth={2} />;
+  }
+}
+
 function App() {
   const [mode, setMode] = useState<Mode>("encrypt");
   const [algorithm, setAlgorithm] = useState<Algorithm>("aes-256-gcm");
