@@ -55,23 +55,25 @@ function railPattern(length: number, rails: number): number[] {
 }
 
 function railFenceEncrypt(input: string, rails: number): string {
-  if (rails === 1 || input.length <= 1) return input;
+  const characters = Array.from(input);
+  if (rails === 1 || characters.length <= 1) return input;
   const rows = Array.from({ length: rails }, () => [] as string[]);
-  const pattern = railPattern(input.length, rails);
-  for (let index = 0; index < input.length; index += 1) rows[pattern[index]].push(input[index]);
+  const pattern = railPattern(characters.length, rails);
+  for (let index = 0; index < characters.length; index += 1) rows[pattern[index]].push(characters[index]);
   return rows.map((row) => row.join("")).join("");
 }
 
 function railFenceDecrypt(input: string, rails: number): string {
-  if (rails === 1 || input.length <= 1) return input;
-  const pattern = railPattern(input.length, rails);
+  const characters = Array.from(input);
+  if (rails === 1 || characters.length <= 1) return input;
+  const pattern = railPattern(characters.length, rails);
   const rowCounts = Array.from({ length: rails }, () => 0);
   for (const rail of pattern) rowCounts[rail] += 1;
 
   const rows: string[][] = [];
   let cursor = 0;
   for (const count of rowCounts) {
-    rows.push(Array.from(input.slice(cursor, cursor + count)));
+    rows.push(characters.slice(cursor, cursor + count));
     cursor += count;
   }
 
