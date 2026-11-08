@@ -101,7 +101,7 @@ export function validatePassword(password: string): void {
     throw new CryptoInputError("Kata sandi wajib diisi minimal 1 karakter.");
   }
   if (password.length > 1024) {
-    throw new CryptoInputError("Password terlalu panjang (maksimal 1.024 karakter).");
+    throw new CryptoInputError("Kata sandi terlalu panjang (maksimal 1.024 karakter).");
   }
 }
 
