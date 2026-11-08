@@ -60,7 +60,6 @@ const algorithmInfo: Record<Algorithm, { label: string; description: string; sec
   },
 };
 
-const modernAlgorithms: Algorithm[] = ["aes-256-gcm", "aes-128-gcm"];
 const classicalAlgorithms: Algorithm[] = ["caesar", "rot13", "atbash", "vigenere", "rail-fence"];
 
 function App() {
@@ -76,7 +75,7 @@ function App() {
   const [notice, setNotice] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const isModern = modernAlgorithms.includes(algorithm);
+  const isModern = algorithm === "aes-256-gcm" || algorithm === "aes-128-gcm";
   const usesSecret = isModern || algorithm === "vigenere";
   const usesParameter = algorithm === "caesar" || algorithm === "rail-fence";
   const selectedInfo = algorithmInfo[algorithm];
