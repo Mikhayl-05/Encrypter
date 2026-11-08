@@ -54,6 +54,13 @@ function base64ToBytes(value: string): Uint8Array {
   }
 }
 
+
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const buffer = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buffer).set(bytes);
+  return buffer;
+}
+
 function requireWebCrypto(): void {
   if (!globalThis.crypto?.subtle || !globalThis.crypto?.getRandomValues) {
     throw new Error("Browser ini tidak mendukung Web Crypto API. Gunakan browser modern melalui koneksi HTTPS.");
@@ -62,13 +69,13 @@ function requireWebCrypto(): void {
 
 async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
   const passwordBytes = new TextEncoder().encode(password.normalize("NFKC"));
-  const material = await crypto.subtle.importKey("raw", passwordBytes, "PBKDF2", false, ["deriveKey"]);
+  const material = await crypto.subtle.importKey("raw", toArrayBuffer(passwordBytes), "PBKDF2", false, ["deriveKey"]);
 
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
       hash: "SHA-256",
-      salt,
+      salt: toArrayBuffer(salt),
       iterations: ITERATIONS,
     },
     material,
@@ -110,12 +117,12 @@ export async function encryptText(plaintext: string, password: string): Promise<
   const encrypted = await crypto.subtle.encrypt(
     {
       name: "AES-GCM",
-      iv,
-      additionalData: ADDITIONAL_DATA,
+      iv: toArrayBuffer(iv),
+      additionalData: toArrayBuffer(ADDITIONAL_DATA),
       tagLength: TAG_LENGTH,
     },
     key,
-    plaintextBytes,
+    toArrayBuffer(plaintextBytes),
   );
 
   const envelope: CipherEnvelope = {
@@ -179,12 +186,12 @@ export async function decryptText(ciphertext: string, password: string): Promise
     const decrypted = await crypto.subtle.decrypt(
       {
         name: "AES-GCM",
-        iv,
-        additionalData: ADDITIONAL_DATA,
+        iv: toArrayBuffer(iv),
+        additionalData: toArrayBuffer(ADDITIONAL_DATA),
         tagLength: TAG_LENGTH,
       },
       key,
-      encryptedBytes,
+      toArrayBuffer(encryptedBytes),
     );
 
     return new TextDecoder("utf-8", { fatal: true }).decode(decrypted);
