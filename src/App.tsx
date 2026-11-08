@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowDownToLine,
   ArrowLeftRight,
@@ -289,7 +290,7 @@ function App() {
             </div>
           </div>
 
-          {algorithmPickerOpen && (
+          {algorithmPickerOpen && createPortal((
             <div
               className="algorithm-modal-backdrop"
               role="presentation"
@@ -404,7 +405,7 @@ function App() {
                 </div>
               </section>
             </div>
-          )}
+          ), document.body)}
 
           <div className="workspace-grid">
             <div className="input-column">
