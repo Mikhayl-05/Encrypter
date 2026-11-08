@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowDownToLine,
   ArrowLeftRight,
   Check,
   CheckCircle2,
+  ChevronDown,
   Clipboard,
   Copy,
   Eye,
@@ -72,7 +73,25 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);\n  const [algorithmPickerOpen, setAlgorithmPickerOpen] = useState(false);
+
+
+  useEffect(() => {
+    if (!algorithmPickerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setAlgorithmPickerOpen(false);
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [algorithmPickerOpen]);
 
   const isModern = algorithm === "aes-256-gcm" || algorithm === "aes-128-gcm";
   const usesSecret = isModern || algorithm === "vigenere";
@@ -233,32 +252,35 @@ function App() {
 
           <div className="algorithm-panel">
             <div className="algorithm-select-wrap">
-              <label htmlFor="algorithm-select">PILIH ALGORITMA</label>
-              <select
-                id="algorithm-select"
-                className="algorithm-select"
-                value={algorithm}
-                onChange={(event) => changeAlgorithm(event.target.value as Algorithm)}
+              <label>METODE YANG DIGUNAKAN</label>
+              <button
+                className="algorithm-picker-trigger"
+                type="button"
+                onClick={() => setAlgorithmPickerOpen(true)}
+                aria-haspopup="dialog"
+                aria-expanded={algorithmPickerOpen}
+                aria-label={`Pilih algoritma. Saat ini ${selectedInfo.label}`}
               >
-                <optgroup label="Enkripsi modern — untuk perlindungan data">
-                  <option value="aes-256-gcm">AES-256-GCM · Format ringkas MKE2</option>
-                  <option value="aes-128-gcm">AES-128-GCM · Format ringkas MKE2</option>
-                </optgroup>
-                <optgroup label="Sandi klasik — untuk belajar dan eksperimen">
-                  <option value="caesar">Caesar Cipher</option>
-                  <option value="rot13">ROT13</option>
-                  <option value="atbash">Atbash Cipher</option>
-                  <option value="vigenere">Vigenère Cipher</option>
-                  <option value="rail-fence">Rail Fence Cipher</option>
-                </optgroup>
-              </select>
+                <span className={selectedInfo.secure ? "picker-trigger-icon secure" : "picker-trigger-icon classic"}>
+                  {algorithmIcon(algorithm)}
+                </span>
+                <span className="picker-trigger-copy">
+                  <small>ALGORITMA TERPILIH</small>
+                  <strong>{selectedInfo.label}</strong>
+                  <span>{selectedInfo.secure ? "Enkripsi modern · Perlindungan data" : "Sandi klasik · Pembelajaran"}</span>
+                </span>
+                <span className="picker-trigger-action">
+                  <span>Ubah</span>
+                  <ChevronDown size={17} />
+                </span>
+              </button>
             </div>
             <div className={selectedInfo.secure ? "algorithm-description" : "algorithm-description algorithm-warning"}>
               <span className="algorithm-status-icon">
                 {selectedInfo.secure ? <ShieldCheck size={16} /> : <Zap size={16} />}
               </span>
               <div>
-                <strong>{selectedInfo.label}</strong>
+                <strong>{selectedInfo.secure ? "Perlindungan modern" : "Mode edukasi"}</strong>
                 <p>{selectedInfo.description}</p>
               </div>
               <span className={selectedInfo.secure ? "classification-badge secure-badge" : "classification-badge classic-badge"}>
@@ -266,6 +288,123 @@ function App() {
               </span>
             </div>
           </div>
+
+          {algorithmPickerOpen && (
+            <div
+              className="algorithm-modal-backdrop"
+              role="presentation"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) setAlgorithmPickerOpen(false);
+              }}
+            >
+              <section
+                className="algorithm-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="algorithm-modal-title"
+                aria-describedby="algorithm-modal-description"
+              >
+                <div className="algorithm-modal-heading">
+                  <div className="modal-heading-mark"><LockKeyhole size={19} /></div>
+                  <button
+                    className="modal-close-button"
+                    type="button"
+                    onClick={() => setAlgorithmPickerOpen(false)}
+                    aria-label="Tutup pilihan algoritma"
+                  >
+                    <X size={19} />
+                  </button>
+                  <div className="modal-kicker">PENGATURAN KRIPTOGRAFI</div>
+                  <h2 id="algorithm-modal-title">Pilih algoritma</h2>
+                  <p id="algorithm-modal-description">Tentukan metode yang paling sesuai dengan kebutuhanmu.</p>
+                </div>
+
+                <div className="algorithm-modal-content">
+                  <section className="algorithm-group">
+                    <div className="algorithm-group-heading">
+                      <div>
+                        <span className="group-overline">REKOMENDASI</span>
+                        <h3>Enkripsi modern</h3>
+                        <p>Untuk melindungi informasi dan pesan pribadi.</p>
+                      </div>
+                      <span className="group-count">02 METODE</span>
+                    </div>
+                    <div className="algorithm-option-grid">
+                      {modernAlgorithms.map((item) => {
+                        const info = algorithmInfo[item];
+                        const selected = algorithm === item;
+                        return (
+                          <button
+                            className={selected ? "algorithm-option selected" : "algorithm-option"}
+                            key={item}
+                            type="button"
+                            aria-pressed={selected}
+                            onClick={() => {
+                              changeAlgorithm(item);
+                              setAlgorithmPickerOpen(false);
+                            }}
+                          >
+                            <span className="algorithm-option-icon secure">{algorithmIcon(item)}</span>
+                            <span className="algorithm-option-copy">
+                              <strong>{info.label}</strong>
+                              <span>{item === "aes-256-gcm" ? "Kunci 256-bit · Format ringkas MKE2" : "Kunci 128-bit · Format ringkas MKE2"}</span>
+                              <em>Direkomendasikan untuk keamanan</em>
+                            </span>
+                            <span className="algorithm-option-check">{selected && <Check size={15} />}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  <section className="algorithm-group classical-group">
+                    <div className="algorithm-group-heading">
+                      <div>
+                        <span className="group-overline classic-overline">UNTUK BEREKSPERIMEN</span>
+                        <h3>Sandi klasik</h3>
+                        <p>Metode historis untuk belajar konsep kriptografi.</p>
+                      </div>
+                      <span className="group-count">05 METODE</span>
+                    </div>
+                    <div className="algorithm-option-grid classical-options">
+                      {classicalAlgorithms.map((item) => {
+                        const info = algorithmInfo[item];
+                        const selected = algorithm === item;
+                        return (
+                          <button
+                            className={selected ? "algorithm-option selected classic-option" : "algorithm-option classic-option"}
+                            key={item}
+                            type="button"
+                            aria-pressed={selected}
+                            onClick={() => {
+                              changeAlgorithm(item);
+                              setAlgorithmPickerOpen(false);
+                            }}
+                          >
+                            <span className="algorithm-option-icon classic">{algorithmIcon(item)}</span>
+                            <span className="algorithm-option-copy">
+                              <strong>{info.label}</strong>
+                              <span>{info.description}</span>
+                            </span>
+                            <span className="algorithm-option-check">{selected && <Check size={15} />}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="classical-modal-note">
+                      <Zap size={15} />
+                      <span>Sandi klasik tidak dirancang untuk melindungi data rahasia. Gunakan AES-GCM untuk informasi sensitif.</span>
+                    </div>
+                  </section>
+                </div>
+
+                <div className="algorithm-modal-footer">
+                  <span><ShieldCheck size={15} /> Semua proses berlangsung di browser.</span>
+                  <button type="button" onClick={() => setAlgorithmPickerOpen(false)}>Selesai</button>
+                </div>
+              </section>
+            </div>
+          )}
 
           <div className="workspace-grid">
             <div className="input-column">
