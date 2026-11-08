@@ -30,11 +30,11 @@ function App() {
   const [notice, setNotice] = useState("");
   const [copied, setCopied] = useState(false);
 
-  const inputLabel = mode === "encrypt" ? "Plain text" : "Encrypted text";
-  const outputLabel = mode === "encrypt" ? "Encrypted output" : "Decrypted output";
+  const inputLabel = mode === "encrypt" ? "Teks asli" : "Teks terenkripsi";
+  const outputLabel = mode === "encrypt" ? "Hasil enkripsi" : "Hasil dekripsi";
   const inputPlaceholder = mode === "encrypt"
     ? "Tulis atau tempel pesan yang ingin kamu enkripsi..."
-    : "Tempel ciphertext MKE1 yang ingin kamu dekripsi...";
+    : "Tempel teks terenkripsi MKE1 yang ingin kamu dekripsi...";
   const outputPlaceholder = mode === "encrypt"
     ? "Hasil enkripsi akan muncul di sini."
     : "Pesan asli akan muncul di sini.";
@@ -113,47 +113,47 @@ function App() {
     setCopied(false);
   }
 
-  const canSubmit = input.trim().length > 0 && Array.from(password).length >= 8 && !busy;
+  const canSubmit = input.trim().length > 0 && Array.from(password).length >= 1 && !busy;
 
   return (
     <div className="app-shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Mikhayl Encrypter home">
+        <a className="brand" href="/" aria-label="Beranda Mikhayl Encrypter">
           <span className="brand-mark"><ShieldCheck size={21} strokeWidth={2.2} /></span>
           <span className="brand-name">mikhayl<span>encrypter</span></span>
         </a>
         <div className="topbar-right">
-          <span className="privacy-pill"><span className="privacy-dot" /> Private by design</span>
+          <span className="privacy-pill"><span className="privacy-dot" /> Dirancang untuk privasi</span>
           <a className="github-link" href="https://github.com/Mikhayl-05/Encrypter" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
         </div>
       </header>
 
       <main>
         <section className="intro">
-          <div className="eyebrow"><Sparkles size={14} /> SIMPLE. PRIVATE. SECURE.</div>
-          <h1>Your text.<br /><span>Your privacy.</span></h1>
-          <p className="intro-copy">Encrypt and decrypt messages with strong, modern cryptography.<br className="desktop-break" /> Your text stays in your browser. Nothing is uploaded.</p>
+          <div className="eyebrow"><Sparkles size={14} /> SEDERHANA. PRIVAT. AMAN.</div>
+          <h1>Teks kamu.<br /><span>Privasi kamu.</span></h1>
+          <p className="intro-copy">Enkripsi dan dekripsi pesan dengan kriptografi modern.<br className="desktop-break" /> Teks kamu tetap di browser dan tidak diunggah ke server.</p>
           <div className="algorithm-chip"><span className="chip-icon"><LockKeyhole size={14} /></span> AES-256-GCM <span className="chip-divider" /> PBKDF2-SHA-256</div>
         </section>
 
-        <section className="workspace" aria-label="Text encryption tool">
+        <section className="workspace" aria-label="Alat enkripsi teks">
           <div className="workspace-top">
-            <div className="tabs" role="tablist" aria-label="Encryption mode">
+            <div className="tabs" role="tablist" aria-label="Mode enkripsi">
               <button className={mode === "encrypt" ? "tab active" : "tab"} onClick={() => changeMode("encrypt")} role="tab" aria-selected={mode === "encrypt"}>
-                <LockKeyhole size={16} /> Encrypt
+                <LockKeyhole size={16} /> Enkripsi
               </button>
               <button className={mode === "decrypt" ? "tab active" : "tab"} onClick={() => changeMode("decrypt")} role="tab" aria-selected={mode === "decrypt"}>
-                <RefreshCw size={16} /> Decrypt
+                <RefreshCw size={16} /> Dekripsi
               </button>
             </div>
-            <button className="clear-button" onClick={clearAll} type="button"><X size={14} /> Clear</button>
+            <button className="clear-button" onClick={clearAll} type="button"><X size={14} /> Hapus</button>
           </div>
 
           <div className="workspace-grid">
             <div className="input-column">
               <div className="field-heading">
                 <label htmlFor="source-text">{inputLabel}</label>
-                <span className="field-meta">{inputLength.toLocaleString("en-US")} bytes</span>
+                <span className="field-meta">{inputLength.toLocaleString("id-ID")} byte</span>
               </div>
               <textarea
                 id="source-text"
@@ -167,9 +167,9 @@ function App() {
               />
 
               <div className="password-heading">
-                <label htmlFor="password">Password</label>
-                <span className={Array.from(password).length >= 8 ? "password-hint valid" : "password-hint"}>
-                  {Array.from(password).length >= 8 ? "Good to go" : "At least 8 characters"}
+                <label htmlFor="password">Kata sandi</label>
+                <span className={Array.from(password).length >= 8 ? "password-hint valid" : Array.from(password).length >= 1 ? "password-hint warning" : "password-hint"}>
+                  {Array.from(password).length >= 8 ? "Kata sandi terisi" : Array.from(password).length >= 1 ? "Kata sandi pendek — mudah ditebak" : "Minimal 1 karakter"}
                 </span>
               </div>
               <div className="password-wrap">
@@ -179,29 +179,32 @@ function App() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(event) => { setPassword(event.target.value); setError(""); setNotice(""); setResult(""); }}
-                  placeholder="Enter a strong password"
-                  autoComplete="new-password"
+                  placeholder="Masukkan kata sandi"
+                  autoComplete="off"
+                  name="mikhayl-cipher-password"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
                   maxLength={1024}
                 />
-                <button className="visibility-button" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"}>
+                <button className="visibility-button" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}>
                   {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
 
-              <div className="password-note"><ShieldCheck size={14} /> Your password is never stored or sent anywhere.</div>
+              <div className="password-note"><ShieldCheck size={14} /> Kata sandi hanya digunakan saat proses dan tidak disimpan oleh aplikasi.</div>
 
               <button className="primary-button" onClick={handleSubmit} disabled={!canSubmit} type="button">
                 {busy ? <span className="spinner" /> : mode === "encrypt" ? <LockKeyhole size={17} /> : <RefreshCw size={17} />}
-                {busy ? "Processing..." : mode === "encrypt" ? "Encrypt text" : "Decrypt text"}
+                {busy ? "Memproses..." : mode === "encrypt" ? "Enkripsi teks" : "Dekripsi teks"}
                 {!busy && <span className="button-shortcut">↗</span>}
               </button>
-              <p className="button-caption">Processed locally using your browser's cryptography engine.</p>
+              <p className="button-caption">Diproses langsung di browser menggunakan teknologi kriptografi.</p>
             </div>
 
             <div className="output-column">
               <div className="field-heading">
                 <label>{outputLabel}</label>
-                {result && <span className="result-ready"><CheckCircle2 size={13} /> Ready</span>}
+                {result && <span className="result-ready"><CheckCircle2 size={13} /> Siap</span>}
               </div>
               <div className={result ? "result-box has-result" : "result-box"}>
                 {result ? (
@@ -217,10 +220,10 @@ function App() {
               <div className="output-actions">
                 <button className="secondary-button" type="button" onClick={copyResult} disabled={!result}>
                   {copied ? <Check size={16} /> : <Copy size={16} />}
-                  {copied ? "Copied" : "Copy"}
+                  {copied ? "Tersalin" : "Salin"}
                 </button>
                 <button className="secondary-button" type="button" onClick={downloadResult} disabled={!result}>
-                  <ArrowDownToLine size={16} /> Download
+                  <ArrowDownToLine size={16} /> Unduh
                 </button>
               </div>
 
@@ -229,30 +232,30 @@ function App() {
               ) : notice ? (
                 <div className="message message-success" role="status"><CheckCircle2 size={15} /> <span>{notice}</span></div>
               ) : (
-                <div className="output-footnote"><Clipboard size={14} /> {mode === "encrypt" ? "Keep your password safe. It cannot be recovered." : "Only the correct password can unlock this text."}</div>
+                <div className="output-footnote"><Clipboard size={14} /> {mode === "encrypt" ? "Simpan kata sandi kamu sendiri. Kata sandi yang hilang tidak dapat dipulihkan." : "Hanya kata sandi yang benar yang dapat membuka teks ini."}</div>
               )}
             </div>
           </div>
         </section>
 
         <section className="trust-row">
-          <div className="trust-item"><span className="trust-icon"><ShieldCheck size={17} /></span><div><strong>Client-side encryption</strong><span>Data never leaves your device</span></div></div>
-          <div className="trust-item"><span className="trust-icon"><LockKeyhole size={17} /></span><div><strong>Authenticated encryption</strong><span>Changes to ciphertext are detected</span></div></div>
-          <div className="trust-item"><span className="trust-icon"><ArrowLeftRight size={17} /></span><div><strong>Encrypt & decrypt</strong><span>One password, both directions</span></div></div>
+          <div className="trust-item"><span className="trust-icon"><ShieldCheck size={17} /></span><div><strong>Enkripsi di perangkat</strong><span>Data tidak meninggalkan perangkatmu</span></div></div>
+          <div className="trust-item"><span className="trust-icon"><LockKeyhole size={17} /></span><div><strong>Enkripsi terautentikasi</strong><span>Perubahan pada teks terenkripsi terdeteksi</span></div></div>
+          <div className="trust-item"><span className="trust-icon"><ArrowLeftRight size={17} /></span><div><strong>Enkripsi & dekripsi</strong><span>Satu kata sandi untuk keduanya</span></div></div>
         </section>
 
         <section className="how-section">
-          <div className="how-title"><span>HOW IT WORKS</span><span className="how-line" /></div>
+          <div className="how-title"><span>CARA KERJA</span><span className="how-line" /></div>
           <div className="how-content">
-            <p><strong>AES-256-GCM</strong> encrypts your text and verifies its integrity. A fresh random salt and 96-bit IV are generated for every encryption. Your password is converted into a 256-bit key with <strong>PBKDF2-SHA-256</strong> (600,000 iterations).</p>
-            <p className="format-note"><span className="format-tag">MKE1</span> Ciphertext uses a versioned format so the app can validate its algorithm parameters before decryption.</p>
+            <p><strong>AES-256-GCM</strong> mengenkripsi teks sekaligus memeriksa keutuhannya. Setiap proses enkripsi membuat salt acak dan IV 96-bit yang baru. Kata sandi diolah menjadi kunci 256-bit menggunakan <strong>PBKDF2-SHA-256</strong> (600.000 iterasi).</p>
+            <p className="format-note"><span className="format-tag">MKE1</span> Teks terenkripsi menggunakan format berversi agar aplikasi dapat memeriksa parameter algoritma sebelum dekripsi.</p>
           </div>
         </section>
       </main>
 
       <footer className="footer">
         <a className="footer-brand" href="/">Mikhayl Encrypter</a>
-        <span>Made for privacy. Runs in your browser.</span>
+        <span>Dibuat untuk privasi. Berjalan langsung di browser.</span>
         <span className="footer-version">AES-256-GCM · v1.0</span>
       </footer>
     </div>
