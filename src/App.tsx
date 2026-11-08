@@ -181,7 +181,6 @@ function App() {
                   onChange={(event) => { setPassword(event.target.value); setError(""); setNotice(""); setResult(""); }}
                   placeholder="Masukkan kata sandi"
                   autoComplete="off"
-                  name="mikhayl-cipher-password"
                   data-lpignore="true"
                   data-1p-ignore="true"
                   maxLength={1024}
@@ -191,7 +190,7 @@ function App() {
                 </button>
               </div>
 
-              <div className="password-note"><ShieldCheck size={14} /> Kata sandi hanya digunakan saat proses dan tidak disimpan oleh aplikasi.</div>
+              <div className="password-note"><ShieldCheck size={14} /> Aplikasi tidak menyimpan kata sandi. Gunakan kata sandi kuat untuk melindungi data penting.</div>
 
               <button className="primary-button" onClick={handleSubmit} disabled={!canSubmit} type="button">
                 {busy ? <span className="spinner" /> : mode === "encrypt" ? <LockKeyhole size={17} /> : <RefreshCw size={17} />}
