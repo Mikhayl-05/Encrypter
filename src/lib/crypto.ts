@@ -97,8 +97,8 @@ function validateText(text: string): Uint8Array {
 }
 
 export function validatePassword(password: string): void {
-  if (Array.from(password).length < 8) {
-    throw new CryptoInputError("Password minimal 8 karakter.");
+  if (Array.from(password).length < 1) {
+    throw new CryptoInputError("Kata sandi wajib diisi minimal 1 karakter.");
   }
   if (password.length > 1024) {
     throw new CryptoInputError("Password terlalu panjang (maksimal 1.024 karakter).");
