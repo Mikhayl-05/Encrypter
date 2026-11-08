@@ -74,7 +74,8 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [copied, setCopied] = useState(false);\n  const [algorithmPickerOpen, setAlgorithmPickerOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [algorithmPickerOpen, setAlgorithmPickerOpen] = useState(false);
 
 
   useEffect(() => {
