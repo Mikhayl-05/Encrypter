@@ -16,7 +16,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { CryptoInputError, decryptText, encryptText } from "./lib/crypto";
+import { decryptText, encryptText } from "./lib/crypto";
 import { transformClassical, type ClassicalAlgorithm } from "./lib/classical";
 
 type Mode = "encrypt" | "decrypt";
@@ -60,7 +60,6 @@ const algorithmInfo: Record<Algorithm, { label: string; description: string; sec
   },
 };
 
-const classicalAlgorithms: Algorithm[] = ["caesar", "rot13", "atbash", "vigenere", "rail-fence"];
 
 function App() {
   const [mode, setMode] = useState<Mode>("encrypt");
