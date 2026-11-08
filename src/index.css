@@ -723,3 +723,49 @@ body { overflow-x: hidden; }
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Neutralize browser tap highlights and blue focus feedback. */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+input,
+textarea,
+select,
+[role="button"],
+[role="tab"],
+[tabindex] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible),
+[role="tab"]:focus:not(:focus-visible),
+[tabindex]:focus:not(:focus-visible) {
+  outline: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible,
+[tabindex]:focus-visible,
+.algorithm-picker-trigger:focus-visible,
+.algorithm-option:focus-visible,
+.modal-close-button:focus-visible {
+  outline: 2px solid #b8c1ce;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.text-area:focus,
+.password-wrap:focus-within,
+.algorithm-select:focus,
+.parameter-input:focus {
+  border-color: #cbd5e1;
+  box-shadow: none;
+}
